@@ -28,7 +28,7 @@ ops_R = {"add": [0,0,0, 0,0,0], "sub": [0,0,0, 0,1,0]}
 
 def instruction_gen_R(operation, num1, num2, num_bits, ops = ops_R): # convert inputs into an binary-encoded R-type instruction
     # define a unique operation by funct3 + first 3 bits of funct7
-    inst_bits = ops[operation]
+    inst_bits = list(ops[operation])
 
     # convert each num into its binary form of max_length 
     if num1 >= pow(2,num_bits) or num2 >= pow(2, num_bits):
@@ -55,7 +55,7 @@ def result_gen_R(operation, num1, num2, num_bits, ops=ops_R):
 num1 = 5
 num2 = 15
 num_bits = 4
-print(instruction_gen_R("add", num1, num2, num_bits))
+#print(instruction_gen_R("add", num1, num2, num_bits))
 
 # create a Dataset class that generates data from deterministic random numbers (set a seed)
 def df_gen_R(operation, num_bits, dataset_len, ops=ops_R):
@@ -68,10 +68,12 @@ def df_gen_R(operation, num_bits, dataset_len, ops=ops_R):
         num1 = random.randint(0, pow(2,num_bits) - 1)
         num2 = random.randint(0, pow(2, num_bits) - 1)
 
-        inst_bits = instruction_gen_R(operation, num1, num2, num_bits, ops = ops_R)
-        result_bits = result_gen_R(operation, num1, num2, num_bits, ops=ops_R)
+        inst_bits = instruction_gen_R(operation, num1, num2, num_bits, ops)
+        # u need num_bits + 1 bits to fully represent the addition of two num_bit size ints without overflow
+        result_bits = result_gen_R(operation, num1, num2, num_bits + 1, ops)
 
-        df_data["inst_bits"].append(inst_bits)
+
+        df_data["inst_bits"].append(inst_bits) 
         df_data["result_bits"].append(result_bits)
 
     
