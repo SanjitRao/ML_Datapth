@@ -58,10 +58,11 @@ num_bits = 4
 #print(instruction_gen_R("add", num1, num2, num_bits))
 
 # create a Dataset class that generates data from deterministic random numbers (set a seed)
-def df_gen_R(operation, num_bits, dataset_len, ops=ops_R):
+def gen_R(operation, num_bits, dataset_len, ops=ops_R):
     # generate random numbers deterministically:
     
-    df_data = {"inst_bits": [], "result_bits" : []}
+    inst_data = []
+    res_data = []
     random.seed(42)
 
     for _ in range(dataset_len):
@@ -73,12 +74,10 @@ def df_gen_R(operation, num_bits, dataset_len, ops=ops_R):
         result_bits = result_gen_R(operation, num1, num2, num_bits + 1, ops)
 
 
-        df_data["inst_bits"].append(inst_bits) 
-        df_data["result_bits"].append(result_bits)
+        inst_data.append(inst_bits) 
+        res_data.append(result_bits)
 
-    
-    df = pd.DataFrame(data = df_data)
-    return df
+    return inst_data, res_data
 
 class R_Dataset(torch.utils.data.Dataset):
 
